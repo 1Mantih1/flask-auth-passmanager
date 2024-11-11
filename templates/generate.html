@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Генерировать пароль</h2>
+<form method="post">
+    <label for="length">Длина пароля</label>
+    <input type="number" id="length" name="length" value="12" min="4" max="64">
+    <button type="submit">Генерировать</button>
+</form>
+{% if password %}
+    <p>Сгенерированный пароль: <strong>{{ password }}</strong></p>
+{% endif %}
+{% endblock %}

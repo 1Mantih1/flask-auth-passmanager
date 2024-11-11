@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Менеджер паролей</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">Главная</a>
+        {% if session['username'] %}
+            <a href="{{ url_for('generate') }}">Генерировать</a>
+            <a href="{{ url_for('manage') }}">Управление</a>
+            <a href="{{ url_for('auth.logout') }}">Выйти</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">Войти</a>
+            <a href="{{ url_for('auth.register') }}">Регистрация</a>
+        {% endif %}
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

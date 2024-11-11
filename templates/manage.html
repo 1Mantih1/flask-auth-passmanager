@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Управление паролями</h2>
+<h3>Добавить пароль</h3>
+<form method="post">
+    <input type="hidden" name="action" value="add">
+    <label for="name">Название</label>
+    <input type="text" id="name" name="name" required>
+    <label for="password">Пароль</label>
+    <input type="text" id="password" name="password" required>
+    <button type="submit">Добавить</button>
+</form>
+<h3>Сохраненные пароли</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Пароль</th>
+        <th>Действия</th>
+    </tr>
+    {% for password in passwords %}
+    <tr>
+        <td>{{ password[0] }}</td>
+        <td>{{ password[2] }}</td>
+        <td>{{ password[3] }}</td>
+        <td>
+            <form method="post" style="display:inline;">
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="id" value="{{ password[0] }}">
+                <input type="text" name="new_password" required>
+                <button type="submit">Обновить</button>
+            </form>
+            <form method="post" style="display:inline;">
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="id" value="{{ password[0] }}">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
