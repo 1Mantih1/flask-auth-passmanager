@@ -1,5 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Добро пожаловать, {{ session['username'] }}</h2>
-<p>Используйте навигацию для генерации или управления вашими паролями.</p>
+<div class="card">
+    <h2>Добро пожаловать{% if session['username'] %}, {{ session['username'] }}{% endif %}</h2>
+    
+    {% if session['username'] %}
+        <p>Вы вошли в систему. Теперь вы можете:</p>
+        <ul style="margin: 20px 0; padding-left: 20px;">
+            <li>Сгенерировать надежный пароль</li>
+            <li>Сохранить свои пароли в защищенном хранилище</li>
+            <li>Управлять сохраненными паролями</li>
+        </ul>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <a href="{{ url_for('generate') }}" class="btn">Генератор паролей</a>
+            <a href="{{ url_for('manage') }}" class="btn btn-secondary">Мои пароли</a>
+        </div>
+    {% else %}
+        <p>Менеджер паролей поможет вам:</p>
+        <ul style="margin: 20px 0; padding-left: 20px;">
+            <li>Создавать надежные уникальные пароли</li>
+            <li>Безопасно хранить ваши пароли</li>
+            <li>Легко управлять всеми учетными данными</li>
+        </ul>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <a href="{{ url_for('auth.login') }}" class="btn">Войти</a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Регистрация</a>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

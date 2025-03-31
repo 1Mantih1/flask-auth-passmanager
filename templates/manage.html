@@ -1,42 +1,130 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Управление паролями</h2>
-<h3>Добавить пароль</h3>
-<form method="post">
-    <input type="hidden" name="action" value="add">
-    <label for="name">Название</label>
-    <input type="text" id="name" name="name" required>
-    <label for="password">Пароль</label>
-    <input type="text" id="password" name="password" required>
-    <button type="submit">Добавить</button>
-</form>
-<h3>Сохраненные пароли</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Название</th>
-        <th>Пароль</th>
-        <th>Действия</th>
-    </tr>
-    {% for password in passwords %}
-    <tr>
-        <td>{{ password[0] }}</td>
-        <td>{{ password[2] }}</td>
-        <td>{{ password[3] }}</td>
-        <td>
-            <form method="post" style="display:inline;">
-                <input type="hidden" name="action" value="update">
-                <input type="hidden" name="id" value="{{ password[0] }}">
-                <input type="text" name="new_password" required>
-                <button type="submit">Обновить</button>
-            </form>
-            <form method="post" style="display:inline;">
-                <input type="hidden" name="action" value="delete">
-                <input type="hidden" name="id" value="{{ password[0] }}">
-                <button type="submit">Удалить</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="card">
+    <h2>Мои пароли</h2>
+    
+    <h3>Добавить новый пароль</h3>
+    <form method="post" style="margin-bottom: 30px;">
+        <input type="hidden" name="action" value="add">
+        
+        <div class="form-group">
+            <label for="name">Название сервиса</label>
+            <input type="text" id="name" name="name" class="form-control" required placeholder="Например: Gmail, Facebook">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <div class="password-input-group">
+                <input type="password" id="password" name="password" class="form-control" required>
+                <button type="button" class="btn btn-sm" onclick="togglePasswordVisibility('password', this)">
+                    <i class="eye-icon">👁</i>
+                </button>
+                <button type="button" class="btn btn-sm" onclick="generateAndCopyPassword()">Сгенерировать</button>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn">Сохранить пароль</button>
+    </form>
+    
+    <h3>Сохраненные пароли</h3>
+    {% if passwords %}
+        <div style="overflow-x: auto;">
+            <table class="password-table">
+                <thead>
+                    <tr>
+                        <th>Сервис</th>
+                        <th>Пароль</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for password in passwords %}
+                    <tr>
+                        <td>{{ password.name }}</td>
+                        <td>
+                            <span class="password-placeholder">••••••••</span>
+                            <span class="actual-password" style="display: none;">{{ password.password }}</span>
+                        </td>
+                        <td class="password-actions">
+                            <button class="btn btn-sm" onclick="toggleRowPasswordVisibility(this)">Показать</button>
+                            <button class="btn btn-sm btn-secondary" onclick="copyRowPassword(this)">Копировать</button>
+                            <form method="post" style="display: inline;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="id" value="{{ password.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>У вас пока нет сохраненных паролей.</p>
+    {% endif %}
+</div>
+
+<script>
+    function togglePasswordVisibility(inputId, button) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            button.innerHTML = '<i class="eye-icon">👁</i>';
+        } else {
+            input.type = 'password';
+            button.innerHTML = '<i class="eye-icon">👁</i>';
+        }
+    }
+    
+    function toggleRowPasswordVisibility(button) {
+        const row = button.closest('tr');
+        const placeholder = row.querySelector('.password-placeholder');
+        const actualPassword = row.querySelector('.actual-password');
+        
+        if (placeholder.style.display === 'none') {
+            placeholder.style.display = 'inline';
+            actualPassword.style.display = 'none';
+            button.textContent = 'Показать';
+        } else {
+            placeholder.style.display = 'none';
+            actualPassword.style.display = 'inline';
+            button.textContent = 'Скрыть';
+        }
+    }
+    
+    function generateAndCopyPassword() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+        let password = '';
+        for (let i = 0; i < 12; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        
+        const passwordInput = document.getElementById('password');
+        passwordInput.value = password;
+        passwordInput.type = 'text'; // Show the generated password
+        copyToClipboard(password);
+        alert('Пароль сгенерирован и скопирован в буфер обмена');
+    }
+    
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            console.log('Text copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        });
+    }
+    
+    function copyRowPassword(button) {
+        const row = button.closest('tr');
+        const actualPassword = row.querySelector('.actual-password');
+        copyToClipboard(actualPassword.textContent);
+        alert('Пароль скопирован в буфер обмена');
+    }
+</script>
 {% endblock %}

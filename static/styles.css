@@ -1,89 +1,278 @@
-/* General styles */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
-}
-
-header {
-    background-color: #343a40;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-}
-
-.container {
-    width: 100%;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: #212529;
+    background-color: #f5f7ff;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: calc(100vh - 80px);
+  }
+  
+  /* Navigation */
+  nav {
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    flex-direction: column;
-}
-
-.card {
-    width: 350px;
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    animation: slideIn 1s ease;
-}
-
-h2 {
-    margin-bottom: 30px;
-    color: #343a40;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-/* Form styles */
-form label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #495057;
-    font-size: 14px;
-}
-
-form input[type="text"],
-form input[type="password"] {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  nav a {
+    color: #212529;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin: 0 5px;
+  }
+  
+  nav a:hover {
+    color: #4361ee;
+    background-color: rgba(67, 97, 238, 0.1);
+  }
+  
+  nav a.active {
+    color: #4361ee;
+    font-weight: 600;
+  }
+  
+  /* Cards */
+  .card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 600px;
     width: 100%;
-    padding: 12px;
+  }
+  
+  /* Forms */
+  .form-group {
     margin-bottom: 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #f1f3f5;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-form button {
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #212529;
+  }
+  
+  .form-control {
     width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-form button:hover {
-    background-color: #0056b3;
-}
-
-/* Animation */
-@keyframes slideIn {
-    0% {
-        opacity: 0;
-        transform: translateY(-50px);
+    transition: all 0.3s ease;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4361ee;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #3f37c9;
+    transform: translateY(-2px);
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+  
+  .btn-danger {
+    background-color: #f72585;
+  }
+  
+  .btn-danger:hover {
+    background-color: #d31666;
+  }
+  
+  .btn-sm {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  /* Password generator */
+  .password-display {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 18px;
+    word-break: break-all;
+    position: relative;
+  }
+  
+  .password-display strong {
+    color: #4361ee;
+  }
+  
+  .copy-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: rgba(67, 97, 238, 0.1);
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .copy-btn:hover {
+    background-color: rgba(67, 97, 238, 0.2);
+  }
+  
+  .password-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+  }
+  
+  .option-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .option-group input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  /* Password management */
+  .password-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .password-table th, .password-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .password-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+  }
+  
+  .password-table tr:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .password-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .password-input-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-group input {
+    flex-grow: 1;
+    border-radius: 8px 0 0 8px;
+  }
+  
+  .password-input-group button {
+    height: 38px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .password-input-group button:last-child {
+    border-radius: 0 8px 8px 0;
+  }
+  
+  /* Flash messages */
+  .flashes {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+  }
+  
+  .flashes li {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: 500;
+  }
+  
+  .flashes .success {
+    background-color: #28a745;
+  }
+  
+  .flashes .error {
+    background-color: #f72585;
+  }
+  
+  .flashes .info {
+    background-color: #4895ef;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav {
+      flex-direction: column;
+      padding: 10px;
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
+    
+    nav a {
+      margin: 5px 0;
+      display: block;
+      width: 100%;
+      text-align: center;
     }
-}
+    
+    .password-options {
+      grid-template-columns: 1fr;
+    }
+    
+    .password-actions {
+      flex-direction: column;
+    }
+  }

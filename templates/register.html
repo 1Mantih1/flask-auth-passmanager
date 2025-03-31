@@ -1,11 +1,109 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Регистрация</h2>
-<form method="post">
-    <label for="username">Имя пользователя</label>
-    <input type="text" id="username" name="username" required>
-    <label for="password">Пароль</label>
-    <input type="password" id="password" name="password" required>
-    <button type="submit">Зарегистрироваться</button>
-</form>
+<div class="card">
+    <h2>Регистрация</h2>
+    
+    <form method="post">
+        <div class="form-group">
+            <label for="username">Имя пользователя</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <div class="password-input-group">
+                <input type="password" id="password" name="password" class="form-control" 
+                       value="{{ generated_password }}" required>
+                <button type="button" class="btn btn-sm" onclick="generatePassword()">
+                    Сгенерировать
+                </button>
+                <button type="button" class="btn btn-sm" onclick="togglePasswordVisibility()">
+                    👁️
+                </button>
+            </div>
+        </div>
+        
+        <div class="password-strength" style="margin-top: 10px;">
+            <div id="strength-bar" style="height: 5px; background: #eee; width: 100%;">
+                <div id="strength-progress" style="height: 100%; width: 0%; background: red;"></div>
+            </div>
+            <small id="strength-text" style="color: #666;">Сложность пароля: слабый</small>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">
+            Зарегистрироваться
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <p>Уже есть аккаунт? <a href="{{ url_for('auth.login') }}">Войдите</a></p>
+    </div>
+</div>
+
+<script>
+    function generatePassword() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+        let password = '';
+        for (let i = 0; i < 12; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        
+        const passwordField = document.getElementById('password');
+        passwordField.value = password;
+        checkPasswordStrength(password);
+    }
+    
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById('password');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+        } else {
+            passwordField.type = 'password';
+        }
+    }
+    
+    function checkPasswordStrength(password) {
+        const strengthBar = document.getElementById('strength-progress');
+        const strengthText = document.getElementById('strength-text');
+        let strength = 0;
+        
+        if (password.length >= 8) strength += 1;
+        if (password.length >= 12) strength += 1;
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+        
+        let color, text, width;
+        switch(strength) {
+            case 0:
+            case 1:
+                color = 'red'; text = 'Слабый'; width = '25%';
+                break;
+            case 2:
+                color = 'orange'; text = 'Средний'; width = '50%';
+                break;
+            case 3:
+                color = 'yellow'; text = 'Хороший'; width = '75%';
+                break;
+            default:
+                color = 'green'; text = 'Сильный'; width = '100%';
+        }
+        
+        strengthBar.style.backgroundColor = color;
+        strengthBar.style.width = width;
+        strengthText.textContent = `Сложность пароля: ${text}`;
+        strengthText.style.color = color;
+    }
+    
+    document.getElementById('password').addEventListener('input', function(e) {
+        checkPasswordStrength(e.target.value);
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const initialPassword = document.getElementById('password').value;
+        if (initialPassword) {
+            checkPasswordStrength(initialPassword);
+        }
+    });
+</script>
 {% endblock %}

@@ -2,32 +2,49 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Менеджер паролей</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav>
-        <a href="{{ url_for('index') }}">Главная</a>
-        {% if session['username'] %}
-            <a href="{{ url_for('generate') }}">Генерировать</a>
-            <a href="{{ url_for('manage') }}">Управление</a>
-            <a href="{{ url_for('auth.logout') }}">Выйти</a>
-        {% else %}
-            <a href="{{ url_for('auth.login') }}">Войти</a>
-            <a href="{{ url_for('auth.register') }}">Регистрация</a>
-        {% endif %}
+        <div class="nav-brand">Менеджер паролей</div>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' }}">Главная</a>
+            {% if session['username'] %}
+                <a href="{{ url_for('generate') }}" class="{{ 'active' if request.endpoint == 'generate' }}">Генератор</a>
+                <a href="{{ url_for('manage') }}" class="{{ 'active' if request.endpoint == 'manage' }}">Мои пароли</a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-danger">Выйти</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}" class="{{ 'active' if request.endpoint == 'auth.login' }}">Войти</a>
+                <a href="{{ url_for('auth.register') }}" class="{{ 'active' if request.endpoint == 'auth.register' }}">Регистрация</a>
+            {% endif %}
+        </div>
     </nav>
+
     <div class="container">
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <ul class="flashes">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
                 {% endfor %}
                 </ul>
             {% endif %}
         {% endwith %}
+        
         {% block content %}{% endblock %}
     </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Пароль скопирован в буфер обмена');
+            }).catch(err => {
+                console.error('Ошибка копирования: ', err);
+            });
+        }
+    </script>
 </body>
 </html>
